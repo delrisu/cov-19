@@ -1,9 +1,6 @@
 package com.delrisu.pcsscovid.model;
 
-import com.delrisu.pcsscovid.model.latest.Lithuania;
-import com.delrisu.pcsscovid.model.latest.Palestine;
-import com.delrisu.pcsscovid.model.latest.Poland;
-import com.delrisu.pcsscovid.model.latest.Slovenia;
+import com.delrisu.pcsscovid.model.latest.*;
 import com.delrisu.pcsscovid.utils.Constants;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -38,6 +35,12 @@ public class CustomCountryData {
         this.country = Constants.PALESTINE;
         this.newCases = palestine.getNewCases();
         this.allCases = palestine.getInfected();
+    }
+
+    public CustomCountryData(Italy italy){
+        this.country = Constants.ITALY;
+        this.newCases = italy.getNewPositive();
+        this.allCases = italy.getTotalPositive();
     }
 
     private String country;
