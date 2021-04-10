@@ -1,15 +1,15 @@
-package com.delrisu.pcsscovid.model;
+package com.delrisu.pcsscovid.model.latest;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.delrisu.pcsscovid.model.Country;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LatestPolandData {
+public class Poland extends Country {
 
     private Long infected;
     private Long deceased;
@@ -22,9 +22,5 @@ public class LatestPolandData {
     private Long dailyDeceasedDueToCovid;
     private Long dailyRecovered;
     private Long dailyQuarantine;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private LocalDateTime lastUpdatedAtApify;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private LocalDateTime lastUpdatedAtSource;
-    private String country;
+
 }
