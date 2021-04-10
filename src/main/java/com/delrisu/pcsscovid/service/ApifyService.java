@@ -1,5 +1,6 @@
 package com.delrisu.pcsscovid.service;
 
+import com.delrisu.pcsscovid.model.LatestLithuania;
 import com.delrisu.pcsscovid.model.LatestPolandData;
 import com.delrisu.pcsscovid.utils.Constants;
 import org.slf4j.Logger;
@@ -23,6 +24,10 @@ public class ApifyService {
 
     public LatestPolandData getLatestPolandData() {
         return webClient.get().uri(makeLatestUri(Constants.POLAND)).retrieve().bodyToMono(LatestPolandData.class).block();
+    }
+
+    public LatestLithuania getLatestLithuaniaData() {
+        return webClient.get().uri(makeLatestUri(Constants.LITHUANIA)).retrieve().bodyToMono(LatestLithuania.class).block();
     }
 
     private String makeLatestUri(String country) {
