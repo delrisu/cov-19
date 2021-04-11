@@ -1,7 +1,7 @@
 package com.delrisu.pcsscovid.service;
 
 import com.delrisu.pcsscovid.model.Country;
-import com.delrisu.pcsscovid.model.CustomCountryData;
+import com.delrisu.pcsscovid.model.CountryData;
 import com.delrisu.pcsscovid.model.latest.*;
 import com.delrisu.pcsscovid.utils.Constants;
 import org.slf4j.Logger;
@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("apifyService")
 public class ApifyService {
@@ -26,6 +29,7 @@ public class ApifyService {
     }
 
     public Country getLatestData(String country) {
+
         switch (country) {
             case Constants.SLOVENIA:
                 return webClient.get().uri(makeLatestUri(Constants.SLOVENIA_LINK)).retrieve()
@@ -47,21 +51,55 @@ public class ApifyService {
         }
     }
 
-    public CustomCountryData getData(String country) {
+    public CountryData getData(String country) {
+
+        //TODO DB integration (less calls to apify)? DB fill as scheduled task?
         switch (country) {
             case Constants.SLOVENIA:
-                return new CustomCountryData((Slovenia) getLatestData(country));
+                return new CountryData((Slovenia) getLatestData(country));
             case Constants.POLAND:
-                return new CustomCountryData((Poland) getLatestData(country));
+                return new CountryData((Poland) getLatestData(country));
             case Constants.LITHUANIA:
-                return new CustomCountryData((Lithuania) getLatestData(country));
+                return new CountryData((Lithuania) getLatestData(country));
             case Constants.PALESTINE:
-                return new CustomCountryData((Palestine) getLatestData(country));
+                return new CountryData((Palestine) getLatestData(country));
             case Constants.ITALY:
-                return new CustomCountryData((Italy) getLatestData(country));
+                return new CountryData((Italy) getLatestData(country));
             default:
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find resource");
         }
+    }
+
+    public List<CountryData> getAllData(Optional<String> sortBy, Optional<Boolean> reversed) {
+
+        List<CountryData> countryData = Arrays.stream(Constants.COUNTRIES).map(this::getData)
+                .collect(Collectors.toList());
+
+        final String ALL_CASES = "all_cases";
+        final String NEW_CASES = "new_cases";
+
+        if (sortBy.isPresent()) {
+
+            switch (sortBy.get()) {
+                case ALL_CASES:
+                    countryData = getCollect(countryData, Comparator.comparing(CountryData::getAllCases));
+                case NEW_CASES:
+                    countryData = getCollect(countryData, Comparator.comparing(CountryData::getNewCases));
+                default:
+                    countryData = getCollect(countryData, Comparator.comparing(CountryData::getCountry));
+            }
+        } else {
+            countryData = getCollect(countryData, Comparator.comparing(CountryData::getCountry));
+        }
+
+        if (reversed.orElse(false)) {
+            Collections.reverse(countryData);
+        }
+        return countryData;
+    }
+
+    private List<CountryData> getCollect(List<CountryData> countryData, Comparator<CountryData> compareBy) {
+        return countryData.stream().sorted(compareBy).collect(Collectors.toList());
     }
 
     private String makeLatestUri(String country) {
