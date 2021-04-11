@@ -2,8 +2,7 @@ package com.delrisu.pcsscovid.service;
 
 import com.delrisu.pcsscovid.model.Country;
 import com.delrisu.pcsscovid.model.CountryData;
-import com.delrisu.pcsscovid.model.latest.*;
-import com.delrisu.pcsscovid.utils.Constants;
+import com.delrisu.pcsscovid.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 public class ApifyService {
 
     private final WebClient webClient;
+
+    @Resource(name = "restCountriesService")
+    private RestCountriesService restCountriesService;
 
     private Logger logger = LoggerFactory.getLogger(ApifyService.class);
 
@@ -29,50 +32,28 @@ public class ApifyService {
     }
 
     public Country getLatestData(String country) {
-
-        switch (country) {
-            case Constants.SLOVENIA:
-                return webClient.get().uri(makeLatestUri(Constants.SLOVENIA_LINK)).retrieve()
-                        .bodyToMono(Slovenia.class).block();
-            case Constants.POLAND:
-                return webClient.get().uri(makeLatestUri(Constants.POLAND_LINK)).retrieve()
-                        .bodyToMono(Poland.class).block();
-            case Constants.LITHUANIA:
-                return webClient.get().uri(makeLatestUri(Constants.LITHUANIA_LINK)).retrieve()
-                        .bodyToMono(Lithuania.class).block();
-            case Constants.PALESTINE:
-                return webClient.get().uri(makeLatestUri(Constants.PALESTINE_LINK)).retrieve()
-                        .bodyToMono(Palestine.class).block();
-            case Constants.ITALY:
-                return webClient.get().uri(makeLatestUri(Constants.ITALY_LINK)).retrieve()
-                        .bodyToMono(Italy.class).block();
-            default:
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find resource");
+        if (isHandledCountry(country)) {
+            return (Country) webClient.get().uri(makeLatestUri(Utils.getCountryLink(country)))
+                    .retrieve().bodyToMono(Utils.getCountryClass(country)).block();
         }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find resource");
+    }
+
+    private boolean isHandledCountry(String country) {
+        return Arrays.asList(Utils.Constants.COUNTRIES).contains(country);
     }
 
     public CountryData getData(String country) {
 
-        //TODO DB integration (less calls to apify)? DB fill as scheduled task?
-        switch (country) {
-            case Constants.SLOVENIA:
-                return new CountryData((Slovenia) getLatestData(country));
-            case Constants.POLAND:
-                return new CountryData((Poland) getLatestData(country));
-            case Constants.LITHUANIA:
-                return new CountryData((Lithuania) getLatestData(country));
-            case Constants.PALESTINE:
-                return new CountryData((Palestine) getLatestData(country));
-            case Constants.ITALY:
-                return new CountryData((Italy) getLatestData(country));
-            default:
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unable to find resource");
-        }
+        //TODO DB integration (less calls to apify)? DB fill as scheduled task? Redis caching?
+        CountryData countryData = Utils.getCountryData(country, getLatestData(country));
+        countryData.setAdvancedStatistics(restCountriesService.getPopulation(country));
+        return countryData;
     }
 
     public List<CountryData> getAllData(Optional<String> sortBy, Optional<Boolean> reversed) {
 
-        List<CountryData> countryData = Arrays.stream(Constants.COUNTRIES).map(this::getData)
+        List<CountryData> countryData = Arrays.stream(Utils.Constants.COUNTRIES).map(this::getData)
                 .collect(Collectors.toList());
 
         final String ALL_CASES = "all_cases";
