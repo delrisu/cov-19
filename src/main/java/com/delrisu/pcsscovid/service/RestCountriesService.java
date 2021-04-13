@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Objects;
 
-@Service("restCountriesService")
+@Service
 public class RestCountriesService {
 
     private final WebClient webClient;

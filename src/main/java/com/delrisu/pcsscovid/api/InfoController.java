@@ -3,9 +3,9 @@ package com.delrisu.pcsscovid.api;
 import com.delrisu.pcsscovid.model.CountryData;
 import com.delrisu.pcsscovid.model.latest.Country;
 import com.delrisu.pcsscovid.service.ApifyService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 @RequestMapping("api/v1")
 public class InfoController {
 
-    @Resource(name = "apifyService")
+    @Autowired
     private ApifyService apifyService;
 
     @GetMapping("/countries/full/{country}")

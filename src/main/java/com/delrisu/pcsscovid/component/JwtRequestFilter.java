@@ -22,13 +22,11 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+    private final Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
     @Autowired
     UserService userService;
-
     @Autowired
     JwtTokenUtil jwtTokenUtil;
-
-    private final Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
 
     @SuppressWarnings("NullableProblems")
     @Override
