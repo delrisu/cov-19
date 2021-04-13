@@ -1,6 +1,6 @@
 package com.delrisu.pcsscovid.service;
 
-import com.delrisu.pcsscovid.model.Country;
+import com.delrisu.pcsscovid.model.latest.Country;
 import com.delrisu.pcsscovid.model.CountryData;
 import com.delrisu.pcsscovid.utils.Utils;
 import org.slf4j.Logger;
@@ -59,28 +59,28 @@ public class ApifyService {
         final String ALL_CASES = "all_cases";
         final String NEW_CASES = "new_cases";
 
-        if (sortBy.isPresent()) {
+        boolean rev = reversed.orElse(false);
 
+        if (sortBy.isPresent()) {
             switch (sortBy.get()) {
                 case ALL_CASES:
-                    countryData = getCollect(countryData, Comparator.comparing(CountryData::getAllCases));
+                    return getCollect(countryData, Comparator.comparing(CountryData::getAllCases), rev);
                 case NEW_CASES:
-                    countryData = getCollect(countryData, Comparator.comparing(CountryData::getNewCases));
+                    return getCollect(countryData, Comparator.comparing(CountryData::getNewCases), rev);
                 default:
-                    countryData = getCollect(countryData, Comparator.comparing(CountryData::getCountry));
+                    return getCollect(countryData, Comparator.comparing(CountryData::getCountry), rev);
             }
         } else {
-            countryData = getCollect(countryData, Comparator.comparing(CountryData::getCountry));
+            return getCollect(countryData, Comparator.comparing(CountryData::getCountry), rev);
         }
-
-        if (reversed.orElse(false)) {
-            Collections.reverse(countryData);
-        }
-        return countryData;
     }
 
-    private List<CountryData> getCollect(List<CountryData> countryData, Comparator<CountryData> compareBy) {
-        return countryData.stream().sorted(compareBy).collect(Collectors.toList());
+    private List<CountryData> getCollect(List<CountryData> countryData, Comparator<CountryData> compareBy, Boolean reversed) {
+        List<CountryData> data = countryData.stream().sorted(compareBy).collect(Collectors.toList());
+        if (reversed) {
+            Collections.reverse(data);
+        }
+        return data;
     }
 
     private String makeLatestUri(String country) {

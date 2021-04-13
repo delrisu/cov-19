@@ -1,6 +1,5 @@
 package com.delrisu.pcsscovid.model.latest;
 
-import com.delrisu.pcsscovid.model.Country;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

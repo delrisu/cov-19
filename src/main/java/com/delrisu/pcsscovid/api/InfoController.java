@@ -1,6 +1,6 @@
 package com.delrisu.pcsscovid.api;
 
-import com.delrisu.pcsscovid.model.Country;
+import com.delrisu.pcsscovid.model.latest.Country;
 import com.delrisu.pcsscovid.model.CountryData;
 import com.delrisu.pcsscovid.service.ApifyService;
 import org.springframework.web.bind.annotation.*;

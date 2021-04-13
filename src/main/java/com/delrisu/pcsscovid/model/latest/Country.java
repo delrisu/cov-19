@@ -1,4 +1,4 @@
-package com.delrisu.pcsscovid.model;
+package com.delrisu.pcsscovid.model.latest;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
