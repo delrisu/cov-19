@@ -26,13 +26,13 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDao userDao = userRepository.findByUsername(username);
 
-        if(userDao == null){
+        if (userDao == null) {
             throw new UsernameNotFoundException(username);
         }
         return new User(userDao.getUsername(), userDao.getPassword(), new ArrayList<>());
     }
 
-    public UserDao save(UserDto user){
+    public UserDao save(UserDto user) {
         UserDao newUser = new UserDao();
         newUser.setUsername(user.getUsername());
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));

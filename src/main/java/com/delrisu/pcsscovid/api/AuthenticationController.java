@@ -36,8 +36,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserDto userDto){
-        return ResponseEntity.ok(userService.save(userDto));
+    public ResponseEntity<?> register(@RequestBody UserDto userDto) {
+        return ResponseEntity.ok(userService.save(userDto).getUsername());
     }
 
     private void authenticate(String username, String password) throws Exception {

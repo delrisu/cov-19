@@ -1,7 +1,7 @@
 package com.delrisu.pcsscovid.service;
 
-import com.delrisu.pcsscovid.model.latest.Country;
 import com.delrisu.pcsscovid.model.CountryData;
+import com.delrisu.pcsscovid.model.latest.Country;
 import com.delrisu.pcsscovid.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +18,11 @@ import java.util.stream.Collectors;
 public class ApifyService {
 
     private final WebClient webClient;
-
-    @Resource(name = "restCountriesService")
-    private RestCountriesService restCountriesService;
-
-    private Logger logger = LoggerFactory.getLogger(ApifyService.class);
-
     private final String LATEST = "/records/LATEST?disableRedirect=true";
     private final String KEY_VALUE_STORES = "/key-value-stores";
+    @Resource(name = "restCountriesService")
+    private RestCountriesService restCountriesService;
+    private final Logger logger = LoggerFactory.getLogger(ApifyService.class);
 
     public ApifyService() {
         this.webClient = WebClient.builder().baseUrl("https://api.apify.com/v2").build();
