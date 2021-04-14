@@ -4,13 +4,17 @@
 * https://apify.com/covid-19
 * https://restcountries.eu
 
-### Endpoints
+### Provided REST API
 
-* /register
-* /token
+* **POST** /user
+* **POST** /user/token
+* **DELETE** /user
+* **PUT** /user
 ---
-* /api/v1/countries
-* /api/v1/countries/{country}
-* /api/v1/countries/full/{country}
+* **GET** /api/v1/countries (sortBy=new_cases / sortBy=all_cases / reversed = true)
+* **GET** /api/v1/countries/{country}
+* **GET** /api/v1/countries/full/{country}
+
+country = {italy, lithuania, palestine, poland, slovenia}
 
 For detail check out swagger (/swagger-ui.html)

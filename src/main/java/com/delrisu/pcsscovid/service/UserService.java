@@ -2,6 +2,7 @@ package com.delrisu.pcsscovid.service;
 
 import com.delrisu.pcsscovid.model.UserDao;
 import com.delrisu.pcsscovid.model.UserDto;
+import com.delrisu.pcsscovid.model.UserUpdate;
 import com.delrisu.pcsscovid.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -37,5 +38,17 @@ public class UserService implements UserDetailsService {
         newUser.setUsername(user.getUsername());
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         return userRepository.save(newUser);
+    }
+
+    public Integer update(UserUpdate user) {
+        if (user.getNewPassword() != null) {
+            return userRepository.updatePassword(user.getUsername(), bcryptEncoder.encode(user.getNewPassword()));
+        } else {
+            return userRepository.updatePassword(user.getUsername(), bcryptEncoder.encode(user.getPassword()));
+        }
+    }
+
+    public Integer delete(String username) {
+        return userRepository.deleteByUsername(username);
     }
 }
