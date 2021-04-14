@@ -1,10 +1,10 @@
-#Covid-19 Spring Boot App
+# Covid-19 Spring Boot App
 
-###Used APIs:
+### Used APIs:
 * https://apify.com/covid-19
 * https://restcountries.eu
 
-###Endpoints
+### Endpoints
 
 * /register
 * /token
